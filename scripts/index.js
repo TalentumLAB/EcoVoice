@@ -128,7 +128,7 @@ function sendMessage() {
                         fetch(`https://api.openai.com/v1/threads/${mess.thread_id}/runs/${mess.id}`, {
                             method: 'GET',
                             headers: {
-                                'Authorization': 'Bearer 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' ,
+                                //'Authorization': 'Bearer ' ,
                                 'Content-Type': 'application/json',
                                 'OpenAI-Beta': 'assistants=v1'
                                 // 'Content-Type': 'application/x-www-form-urlencoded',
