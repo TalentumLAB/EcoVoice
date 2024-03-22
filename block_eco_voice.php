@@ -22,7 +22,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-class block_chatbot_EcoVoice extends block_base {
+class block_eco_voice extends block_base {
 
     /**
      * Initialises the block.
@@ -30,7 +30,7 @@ class block_chatbot_EcoVoice extends block_base {
      * @return void
      */
     public function init() {
-        $this->title = get_string('titleblock', 'block_chatbot_EcoVoice');
+        $this->title = get_string('titleblock', 'block_eco_voice');
     }
 
     /**
@@ -48,7 +48,7 @@ class block_chatbot_EcoVoice extends block_base {
         echo '<script>';
         include 'scripts/index.js';
         echo '</script>';
-        $link_img_base='../blocks/chatbot_EcoVoice/pix/';
+        $link_img_base='../blocks/eco_voice/pix/';
 
         if ($this->content !== null) {
             return $this->content;
