@@ -51,9 +51,15 @@ class block_eco_voice extends block_base {
         //* ------------------------------------------------------------
 
         //* Botón para activar el micrófono
-        $this->content->text .= html_writer::start_tag( 'div', ['class' => 'button-ecoVoice'] );
+        $this->content->text .= html_writer::start_tag( 'div', ['class' => 'button-ecoVoice', 'data-toggle' => 'modal', 'data-target' => '#ecoVoiceModal'] );
         $this->content->text .= html_writer::empty_tag( 'img', ['src' => $link_img_base.'microfono.png', 'alt' => 'Icono para activar opción de voz'] );
         $this->content->text .= html_writer::end_tag( 'div', [] );
+
+        //* ------------------------------------------------------------
+        //* VENTANA MODAL CON BOOTSTRAP
+        //* ------------------------------------------------------------
+        $modal_content = include_once( '../blocks/eco_voice/components/modal_content.php' ); //Importando modal
+        $this->content->text .= $modal_content;
 
         return $this->content;
 
