@@ -23,7 +23,19 @@ $modal_content .= html_writer::end_tag( 'div' );
 
 //! Div para agregar contenido a la modal -- IMPORTANTE
 $modal_content .= html_writer::start_tag( 'div', ['class' => 'modal-body container_modal'] );
-$modal_content .= html_writer::tag( 'button', 'Activar Voz', [] );
+
+$modal_content .= html_writer::tag( 'button', 'Activar Voz', ['onclick' => 'reconocimientoVoz()', 'id' => 'button-voice'] );
+
+$modal_content .= html_writer::start_tag( 'div', ['class' => 'container-instructions'] );
+$modal_content .= html_writer::tag( 'h1', 'Instrucciones para asistente de voz' , [] );
+$modal_content .= html_writer::tag( 'p', '1. Debes mencionar palabras como "muéstrame".' , [] );
+$modal_content .= html_writer::tag( 'p', '2. Debes mencionar el "grado" y la "categoría".' , [] );
+$modal_content .= html_writer::tag( 'p', '3. Por ejemplo: Muéstrame el curso de matemáticas de tercero.' , [] );
+$modal_content .= html_writer::end_tag( 'div' );
+
+$modal_content .= html_writer::start_tag( 'div', ['class' => 'container-text-audio', 'id' => 'output'] );
+$modal_content .= html_writer::end_tag( 'div' );
+
 $modal_content .= html_writer::end_tag( 'div' );
 
 //! Div que contiene los botones al final del div

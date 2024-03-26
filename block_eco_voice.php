@@ -32,8 +32,8 @@ class block_eco_voice extends block_base {
         include 'styles/main.css';
         echo '</style>';
 
-        //TODO: Incluyendo javaScript 
-        echo '<script>';
+        //TODO: Incluyendo javaScript y python
+        echo '<script type="module">';
         include 'scripts/index.js';
         echo '</script>';
 
