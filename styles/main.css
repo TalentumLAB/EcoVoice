@@ -1,3 +1,14 @@
+/* CSS para el bloque en general */
+.block_eco_voice {
+    border: none !important;
+    background-color: transparent !important;
+}
+
+.block_eco_voice h5 {
+    visibility: hidden;
+}
+
+/* CSS para el botón */
 .button-ecoVoice {
     width: 3.2em;
     height: 3.2em;
@@ -5,14 +16,15 @@
     border: none;
     cursor: pointer;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
 
     display: flex;
     align-items: center;
     justify-content: center;
     
     position: fixed;
-    right: 2em;
-    bottom: 9.5em;
+    right: 2vw;
+    bottom: 22vh;
 }
 
 .button-ecoVoice img {

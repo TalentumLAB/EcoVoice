@@ -1,4 +1,4 @@
-import { SpeechVoice } from "../blocks/eco_voice/scripts/SpeechVoice/speechVoice.js";
+import { SpeechRecognize } from "../blocks/eco_voice/scripts/SpeechVoice/speechRecognize.js";
 
 //* Arreglos que abarcan los grados de cada nivel educativo y las categorías o guías o focos
 const grados = [
@@ -23,17 +23,17 @@ const categorias = [
 ];
 
 //* Función que activa el botón para reconocer audio por voz
-const reconocimientoVoz = () => {
+const reconocimientoVoz = async() => {
 
     //* Obteniendo elementos HTML
     const divOutput = document.getElementById( 'output' );
     const buttonVoice = document.getElementById( 'button-voice' );
 
-    //* Método estático de la clase que ejecuta el proceso de reconocimiento por voz
-    //! Recibe: el botón y el div
-    //! Recibe: también una función callback que permite obtener el texto reconocido
-    //* La función anterior se hace porque la API de SpeechRecognition es asíncrona
-    SpeechVoice.start(divOutput, buttonVoice, ( textAudio ) => {
+    try {
+        
+        //* Método estático de la clase que ejecuta el proceso de reconocimiento por voz
+        //! Recibe: el botón y el div
+        const textAudio = await SpeechRecognize.start(divOutput, buttonVoice);
 
         //* Variable que guarda el grado y la categoría
         let gradosCategorias = '';
@@ -49,9 +49,9 @@ const reconocimientoVoz = () => {
                 for ( const gradoCategoria of listGradosCategorias ) {
 
                     if ( texto === gradoCategoria ) return gradoCategoria;
-    
+
                 }
-    
+
             }
 
         }
@@ -67,13 +67,16 @@ const reconocimientoVoz = () => {
             console.log( 'Sin coincidencias' );
         } else {
             console.log( gradosCategorias );
+            localStorage.setItem( 'result-text-audio', gradosCategorias );
         }
 
         //* Obteniendo url del navegador
-        const urlNavegador = window.location.href;
-        console.log( urlNavegador );
+        //const urlNavegador = window.location.href;
+        //console.log( urlNavegador );
 
-    });
+    } catch (error) {
+        console.error('Error en el reconocimiento de voz:', error);
+    }
 
 }
 
