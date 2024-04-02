@@ -4,7 +4,7 @@ export class SpeechRecognize {
 
     static start( outputDiv, startButton ) {
 
-        return new Promise((resolve, reject) => {
+        return new Promise(( resolve, reject ) => {
 
             const recognition = new (
                 window.SpeechRecognition || 
@@ -18,6 +18,7 @@ export class SpeechRecognize {
     
             //* Este método se ejecuta cuando empieza el reconocimiento por voz
             recognition.onstart = () => {
+                //* Modificando propiedades del botón
                 startButton.disabled = true;
                 startButton.textContent = 'Escuchando...';
             };

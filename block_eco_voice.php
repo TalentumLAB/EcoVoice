@@ -27,8 +27,6 @@ class block_eco_voice extends block_base {
     */
     public function get_content() {
 
-        global $DB;
-
         //TODO: Incluyendo estilos CSS
         echo '<style>';
         include 'styles/main.css';
@@ -47,15 +45,6 @@ class block_eco_voice extends block_base {
 
         //* Instancia para guardar contenido del bloque
         $this->content = new stdClass();
-
-        //* Leyendo el localstorage para recibir el audio convertido en texto
-        $text_audio = "<script>document.write( localStorage.getItem('result-text-audio') );</script>";
-        if ( is_null( $text_audio ) ) {
-            
-            $id = $DB->get_records_sql("select id from mdl_course where shortname='$text_audio'");
-            var_dump( $id );
-
-        }
 
         //* ------------------------------------------------------------
         //* CREANDO CONTENIDO DEL BLOQUE
