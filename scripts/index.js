@@ -19,7 +19,11 @@ const categorias = [
     'matemáticas',
     'ciencias',
     'steam',
-    'tecnología'
+    'tecnología',
+    'robótica y electrónica',
+    'contenido audiovisual',
+    'programación',
+    'cuidado de la naturaleza'
 ];
 
 //* Función que activa el botón para reconocer audio por voz
@@ -39,11 +43,8 @@ const reconocimientoVoz = async() => {
         //! Recibe: el botón y el div
         const textAudio = await SpeechRecognize.start( divOutput, buttonVoice );
 
-        //* Dividiendo la cadena de texto obtenida
-        const textoAudioSplit = textAudio.toLowerCase().split(' ');
-
         //* Obteniendo cadena [ grado + categoría ]
-        const cadenaGradoCategoria = procesoCadenaBusquedaGradoCategoria( textoAudioSplit );
+        const cadenaGradoCategoria = procesoCadenaBusquedaGradoCategoria( textAudio.toLowerCase() );
         
         //* Verificando que la cadena [ grado + categoría ] sea válido para enviar
         const isValidCadena = procesoValidarTextoAudio( cadenaGradoCategoria );
@@ -72,33 +73,33 @@ const reconocimientoVoz = async() => {
 * Esta función permite obtener la cadena de [ grado + categoría ] 
 * para buscar en la base de datos de moodle
 */
-const procesoCadenaBusquedaGradoCategoria = ( textoAudioSplit ) => {
+const procesoCadenaBusquedaGradoCategoria = ( textoAudio ) => {
 
     //* Variable que guarda el grado y la categoría
-    let gradosCategorias = '';
+    let gradoCategoria = '';
 
-    //* Función que busca alguna coincidencia con grados o categorías
-    const coincidenciaTextoAudio = ( listTextoAudio, listGradosCategorias ) => {
+    //* Función que busca si el grado o categoría está incluido en el texto de audio
+    const coincidenciaTextoAudio = ( textoVoz, gradosCategorias ) => {
 
-        for ( const texto of listTextoAudio ) {
+        for ( const valor of gradosCategorias ) {
 
-            for ( const gradoCategoria of listGradosCategorias ) {
+            //* Revisa si el grado o categoría aparece en el texto
+            const esIncluidoGradoCategoria = textoVoz.includes( valor );
 
-                if ( texto === gradoCategoria ) return gradoCategoria;
-
-            }
+            //* Regresa el texto para concatenarse en la variable "gradoCategoria"
+            if ( esIncluidoGradoCategoria ) return valor;
 
         }
 
     }
 
     //* Buscando si la cadena contiene algún grado. Se concatena
-    gradosCategorias += `${ coincidenciaTextoAudio( textoAudioSplit, grados ) }`;
+    gradoCategoria += `${ coincidenciaTextoAudio( textoAudio, grados ) }`;
 
     //* Buscando si la cadena contiene alguna categoría. Se concatena
-    gradosCategorias += ` - ${ coincidenciaTextoAudio( textoAudioSplit, categorias ) }`;
+    gradoCategoria += ` - ${ coincidenciaTextoAudio( textoAudio, categorias ) }`;
 
-    return gradosCategorias;
+    return gradoCategoria;
 
 }
 
@@ -110,10 +111,11 @@ const procesoValidarTextoAudio = ( cadenaGradoCategoria ) => {
 
     const splitCadena = cadenaGradoCategoria.split(' - ');
     
-    if ( cadenaGradoCategoria === 'undefined - undefined' ) return { ok: false, error: 'No se reconoció audio para cursos' };
-    if ( cadenaGradoCategoria === '' ) return { ok: false, error: 'No se reconoció audio para cursos' };
+    //* Sección donde se crean los posibles errores de validación
+    if ( cadenaGradoCategoria === 'undefined - undefined' ) return { ok: false, error: 'No se reconoció la categoria del curso' };
+    if ( cadenaGradoCategoria === '' ) return { ok: false, error: 'No se reconoció la categoria del curso'};
     if ( splitCadena[0] === 'undefined' ) return { ok: false, error: 'Texto de audio incompleto para redirección' };
-    if ( splitCadena[1] === 'undefined' ) return { ok: false, error: 'Texto de audio incompleto para redirección' };
+    if ( splitCadena[1] === 'undefined' ) return { ok: false, error: 'Texto de audio incompleto para redirección'};
 
     return { ok: true };
 

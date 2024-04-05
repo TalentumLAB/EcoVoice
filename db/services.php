@@ -19,7 +19,7 @@ $services = array(
     'requiredcapability' => '',                                  
     'restrictedusers' => 0,          
     'enabled' => 1,                              
-    'shortname' =>  '',  
+    'shortname' =>  'eco_voice_service',  
     'downloadfiles' => 0,
     'uploadfiles'  => 0  
     )
