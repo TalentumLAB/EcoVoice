@@ -19,7 +19,11 @@ const categorias = [
     'matemáticas',
     'ciencias',
     'steam',
-    'tecnología'
+    'tecnología',
+    'robótica y electrónica',
+    'contenido audiovisual',
+    'programación',
+    'cuidado de la naturaleza'
 ];
 
 //* Función que activa el botón para reconocer audio por voz
@@ -110,10 +114,10 @@ const procesoValidarTextoAudio = ( cadenaGradoCategoria ) => {
 
     const splitCadena = cadenaGradoCategoria.split(' - ');
     
-    if ( cadenaGradoCategoria === 'undefined - undefined' ) return { ok: false, error: 'No se reconoció audio para cursos' };
-    if ( cadenaGradoCategoria === '' ) return { ok: false, error: 'No se reconoció audio para cursos' };
+    if ( cadenaGradoCategoria === 'undefined - undefined' ) return { ok: false, error: 'No se reconoció la categoria del curso' };
+    if ( cadenaGradoCategoria === '' ) return { ok: false, error: 'No se reconoció la categoria del curso'};
     if ( splitCadena[0] === 'undefined' ) return { ok: false, error: 'Texto de audio incompleto para redirección' };
-    if ( splitCadena[1] === 'undefined' ) return { ok: false, error: 'Texto de audio incompleto para redirección' };
+    if ( splitCadena[1] === 'undefined' ) return { ok: false, error: 'Texto de audio incompleto para redirección'};
 
     return { ok: true };
 
