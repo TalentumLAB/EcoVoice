@@ -70,6 +70,70 @@ class block_eco_voice_external extends external_api {
 
     }
 
+
+    //*-------------------------------------------------------------------------------------------------
+    //* Segundo servicio para tomar el texto audio para ir a las calificaciones del curso
+    //*-------------------------------------------------------------------------------------------------
+
+    /*
+     * Definiendo los parámetros que se esperan recibir en la solicitud POST
+     * Parámetro esperado desde el POST: [ textoAudio ]
+     * 
+     * @return post_textAudio_parameters
+    */
+    public static function post_textAudio_grades_parameters() {
+        return new external_function_parameters(
+            array(
+                'textAudio' => new external_value( PARAM_RAW, VALUE_OPTIONAL, 'Parámetro que contiene el audio convertido en texto' ),
+            )    
+        );
+    }
+
+    /*
+     * Definiendo la estructura de los datos a regresar como respuesta a la solicitud desde el cliente
+     *
+     * @return external_function_parameters
+    */
+    public static function post_textAudio_grades_returns() {
+        return new external_single_structure(
+            array(
+                'url_course' => new external_value( PARAM_RAW, 'URL del curso' ),
+            ),
+        );
+    }
+
+    /*
+     * Función que procesa la solicitud POST enviada desde JavaScript
+     *
+     * @return message
+    */
+    public static function post_textAudio_grades( $textAudio ) {
+        
+        //* [ $DB ] permite tener acceso a la base de datos de moodle
+        //* [ $CFG ] permite tener acceso a la configuración global de moodle
+        global $DB, $CFG;
+
+        //* Válidando el parámetro a procesar para que cumpla con las específicaciones definidas en: post_textAudio_parameters()
+        $params = self::validate_parameters( self::post_textAudio_parameters(), ['textAudio' => $textAudio] );
+
+        //* Realizando la consulta en la base de datos de moodle
+        $id = $DB->get_records_sql("select id from mdl_course where shortname like'%".$params['textAudio']."%'");
+        
+        $idCurso = reset( $id ); //* Obtener el primer objeto del array
+        $idResult = $idCurso->id; //* Obteniendo el id del objeto que representa al curso
+
+        //* Creando objeto para enviar al cliente desde el servidor
+        $response = (object) $response;
+
+        //* Agregando atributo al objeto
+        $response->url_course = "".$CFG->wwwroot."/grade/report/grader/index.php?id=".$idResult."";
+        $urlCourse[] = (array) $response;
+        
+        //* Retornando respuesta del servidor al cliente
+        return $urlCourse[0];
+
+    }
+
 }
 
 /*
