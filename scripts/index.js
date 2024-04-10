@@ -1,31 +1,6 @@
 import { SpeechRecognize } from "../blocks/eco_voice/scripts/SpeechVoice/speechRecognize.js";
 import { VoiceAssistant } from "../blocks/eco_voice/scripts/SpeechVoice/voiceAssistant.js";
-
-//* Arreglos que abarcan los grados de cada nivel educativo y las categorías o guías o focos
-const grados = [
-    'transición', 
-    'primero', 
-    'segundo',
-    'tercero',
-    'cuarto',
-    'quinto',
-    'sexto',
-    'séptimo',
-    'octavo',
-    'noveno',
-    'décimo',
-    'once'
-];
-const categorias = [
-    'matemáticas',
-    'ciencias',
-    'steam',
-    'tecnología',
-    'robótica y electrónica',
-    'contenido audiovisual',
-    'programación',
-    'cuidado de la naturaleza'
-];
+import { ProcessTextAudio } from "../blocks/eco_voice/scripts/ProcessTextAudio/process.js";
 
 //* Función que activa el botón para reconocer audio por voz
 const reconocimientoVoz = async() => {
@@ -66,15 +41,26 @@ const reconocimientoVoz = async() => {
         
         if ( isValidCadena.ok ) {
 
-            if ( cadenaProcesada === 'Mostrar hora' ) {
+            //* Revisando si la cadena es para decir la hora actual
+            if ( cadenaProcesada.includes('hora es') ) {
 
                 //* Ejecutando asistente de voz
-                await VoiceAssistant.start({ textSayAssistant: 'La hora actual es 12:17 p.m.' });
+                await VoiceAssistant.start({ textSayAssistant: cadenaProcesada });
 
             } else {
 
-                //TODO: organizar el post para mirar si solo es ir a cursos o ir a las calificaciones del curso
-                postTextAudioAJAX( cadenaProcesada, divOutput );
+                //* Condición para mirar si solo es ir a cursos o ir a las calificaciones del curso
+                if ( cadenaProcesada.includes('calificaciones') ) {
+
+                    //* Ejemplo: [ tercero - matemáticas - calificaciones ]
+                    const splitCadena = cadenaProcesada.split(' - ');
+                    postTextAudioGradesAJAX( `${ splitCadena[0] } - ${ splitCadena[1] }`, divOutput );
+
+                } else {
+
+                    postTextAudioAJAX( cadenaProcesada, divOutput );
+
+                }
 
             }
         
@@ -103,36 +89,30 @@ const reconocimientoVoz = async() => {
 */
 const procesoTextoAudioBusqueda = ( textoAudio ) => {
 
-    //TODO: poner cada proceso de búsqueda en una clase con métodos estáticos
+    //TODO: primero va calificaciones, después cursos y otros
+    
+    if ( textoAudio.includes('calificación') || textoAudio.includes('calificaciones') ) {
 
-    //* Buscando en la cadena si es para mostrar hora actual
-    if ( textoAudio.includes( 'hora actual' ) || textoAudio.includes( 'hora' ) ) return 'Mostrar hora';
+        //* Procesando [textoAudio] para regresar [grado + categoría + calificaciones]
+        const result = ProcessTextAudio.processCalificaciones( textoAudio );
 
-    //* Variable que guarda el grado y la categoría
-    let gradoCategoria = '';
+        return result;
 
-    //* Función que busca si el grado o categoría está incluido en el texto de audio
-    const coincidenciaTextoAudio = ( textoVoz, gradosCategorias ) => {
+    } else if ( textoAudio.includes('curso') ) {
 
-        for ( const valor of gradosCategorias ) {
+        //* Procesando [textoAudio] para regresar [grado + categoría]
+        const result = ProcessTextAudio.processGradoCategoria( textoAudio );
 
-            //* Revisa si el grado o categoría aparece en el texto
-            const esPalabraClaveIncluido = textoVoz.includes( valor );
+        return result;
 
-            //* Regresa el texto para concatenarse en la variable "gradoCategoria"
-            if ( esPalabraClaveIncluido ) return valor;
+    } else {
 
-        }
+        //* Procesando [textoAudio] para regresar un resultado como la hora, el día, saludo, etc
+        const result = ProcessTextAudio.processOthers( textoAudio );
+
+        return result;
 
     }
-
-    //* Buscando si la cadena contiene algún grado. Se concatena
-    gradoCategoria += `${ coincidenciaTextoAudio( textoAudio, grados ) }`;
-
-    //* Buscando si la cadena contiene alguna categoría. Se concatena
-    gradoCategoria += ` - ${ coincidenciaTextoAudio( textoAudio, categorias ) }`;
-
-    return gradoCategoria;
 
 }
 
@@ -142,17 +122,22 @@ const procesoTextoAudioBusqueda = ( textoAudio ) => {
 */
 const procesoValidarTextoAudio = ( cadena ) => {
 
-    const splitCadena = cadena.split(' - ');
+    //* Error si dice otra cosa que no está definido para el reconocimiento por voz
+    if ( cadena === null ) return { ok: false, error: 'No se reconoció el audio. Intentalo de nuevo' };
     
     //* Sección donde se crean los posibles errores de validación
+    const splitCadena = cadena.split(' - ');
+
+    if ( cadena === '' ) return { ok: false, error: 'No se reconoció el audio'};
     if ( cadena === 'undefined - undefined' ) return { ok: false, error: 'No se reconoció la categoria del curso' };
-    if ( cadena === '' ) return { ok: false, error: 'No se reconoció la categoria del curso'};
     if ( splitCadena[0] === 'undefined' ) return { ok: false, error: 'Texto de audio incompleto para redirección' };
     if ( splitCadena[1] === 'undefined' ) return { ok: false, error: 'Texto de audio incompleto para redirección'};
 
     return { ok: true };
 
 }
+
+//TODO: incluir la función postTextAudio en una clase 
 
 /* 
 * Función que usa AJAX para comunicarse con la API de moodle
@@ -198,6 +183,62 @@ const postTextAudioAJAX = ( text, divOutput ) => {
             
             notification.addNotification({
                 message: 'Error en el proceso de redirección URL curso',
+                type: "Error"
+            });
+            
+        });
+
+    });
+
+}
+
+/* 
+* Función que usa AJAX para comunicarse con la API de moodle
+* y trae la URL que lleva a las calificaciones de un curso
+*/
+const postTextAudioGradesAJAX = ( text, divOutput ) => {
+
+    require(['core/ajax','core/notification'], ( ajax, notification ) => {
+
+        //* Creando promesa
+        let promises = ajax.call([{
+            methodname: 'block_eco_voice_post_textAudio_grades',
+            args: { textAudio: text },
+            done: notification.success,
+            fail: notification.exception
+        }]);
+
+        //* Resolviendo la promesa cuando todo fue éxitoso o hubo fallos
+        promises[0].done( async ( response ) => {
+            
+            //* Revisando si el id no viene vacío en la url del curso
+            const id = response.url_course.split('=')[1];
+
+            //* Mostrando mensaje si el id está vacío
+            if ( id !== '' ) {
+
+                //* Obteniendo la url del objeto
+                window.location.href = response.url_course;
+
+            } else {
+
+                //* Imprimiendo mensaje de error en la modal de voz
+                divOutput.textContent = 'Curso no encontrado';
+                divOutput.style.backgroundColor = '#FDF1F5';
+                divOutput.style.color = '#D22F5F';
+                divOutput.style.fontWeight = 'bold';
+
+                //* Ejecutando asistente de voz
+                await VoiceAssistant.start({textSayAssistant: 'Curso no encontrado'});
+
+            }
+
+        }).fail(( ex ) => {
+            
+            console.error( ex );
+
+            notification.addNotification({
+                message: `Error en el proceso de redirección URL curso`,
                 type: "Error"
             });
             

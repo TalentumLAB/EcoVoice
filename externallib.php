@@ -114,11 +114,11 @@ class block_eco_voice_external extends external_api {
         global $DB, $CFG;
 
         //* Válidando el parámetro a procesar para que cumpla con las específicaciones definidas en: post_textAudio_parameters()
-        $params = self::validate_parameters( self::post_textAudio_parameters(), ['textAudio' => $textAudio] );
+        $params = self::validate_parameters( self::post_textAudio_grades_parameters(), ['textAudio' => $textAudio] );
 
         //* Realizando la consulta en la base de datos de moodle
         $id = $DB->get_records_sql("select id from mdl_course where shortname like'%".$params['textAudio']."%'");
-        
+
         $idCurso = reset( $id ); //* Obtener el primer objeto del array
         $idResult = $idCurso->id; //* Obteniendo el id del objeto que representa al curso
 

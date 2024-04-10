@@ -23,7 +23,7 @@ $services = array(
     'eco voice service' => array(
         'functions' => array (
             'block_eco_voice_post_textAudio',
-            'block_eco_voice_post_textAudio_grade'
+            'block_eco_voice_post_textAudio_grades'
         ), //web service function name  
     'requiredcapability' => '',                                  
     'restrictedusers' => 0,          
