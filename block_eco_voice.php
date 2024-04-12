@@ -22,7 +22,7 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-//* Creando clase para el bloque ecoVoice
+// Creando clase para el bloque ecoVoice.
 class block_eco_voice extends block_base {
 
     /*
@@ -35,45 +35,57 @@ class block_eco_voice extends block_base {
     }
 
     /*
-    * Obteniendo contenido del bloque
+    * Obteniendo contenido del bloque.
     *
-    * @return string bloque HTML 
+    * @return string bloque HTML
     */
     public function get_content() {
 
-        //TODO: Incluyendo estilos CSS
+        // Incluyendo estilos CSS.
         echo '<style>';
         include 'styles/main.css';
         echo '</style>';
 
-        //TODO: Incluyendo javaScript y python
+        // Incluyendo javaScript.
         echo '<script type="module">';
         include 'scripts/index.js';
         echo '</script>';
 
-        //* Ruta para traer contenido multimedia
-        $link_img_base='../blocks/eco_voice/pix/';
+        // Ruta para traer contenido multimedia.
+        $linkimgbase = '../blocks/eco_voice/pix/';
 
-        //* Condición que regresa el contenido si ya ha sido generado
-        if ( $this->content !== null ) return $this->content;
+        // Condición que regresa el contenido si ya ha sido generado.
+        if ( $this->content !== null ) {
+            return $this->content;
+        }
 
-        //* Instancia para guardar contenido del bloque
+        // Instancia para guardar contenido del bloque.
         $this->content = new stdClass();
 
-        //* ------------------------------------------------------------
-        //* CREANDO CONTENIDO DEL BLOQUE
-        //* ------------------------------------------------------------
+        // CREANDO CONTENIDO DEL BLOQUE.
 
-        //* Botón para activar el micrófono
-        $this->content->text .= html_writer::start_tag( 'div', ['class' => 'button-ecoVoice', 'data-toggle' => 'modal', 'data-target' => '#ecoVoiceModal'] );
-        $this->content->text .= html_writer::empty_tag( 'img', ['src' => $link_img_base.'microfono.png', 'alt' => 'Icono para activar opción de voz'] );
+        // Botón para activar el micrófono.
+        $this->content->text .= html_writer::start_tag(
+            'div',
+            [
+                'class' => 'button-ecoVoice',
+                'data-toggle' => 'modal',
+                'data-target' => '#ecoVoiceModal',
+            ]
+        );
+        $this->content->text .= html_writer::empty_tag(
+            'img',
+            [
+                'src' => $linkimgbase.'microfono.png',
+                'alt' => 'Icono para activar opción de voz',
+            ]
+        );
         $this->content->text .= html_writer::end_tag( 'div', [] );
 
-        //* ------------------------------------------------------------
-        //* VENTANA MODAL CON BOOTSTRAP
-        //* ------------------------------------------------------------
-        $modal_content = include_once( '../blocks/eco_voice/components/modal_content.php' ); //Importando modal
-        $this->content->text .= $modal_content;
+        // VENTANA MODAL CON BOOTSTRAP.
+
+        $modalcontent = include_once( '../blocks/eco_voice/components/modal_content.php' ); // Importando modal.
+        $this->content->text .= $modalcontent;
 
         return $this->content;
 

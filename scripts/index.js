@@ -1,6 +1,7 @@
 import { SpeechRecognize } from "../blocks/eco_voice/scripts/SpeechVoice/speechRecognize.js";
 import { VoiceAssistant } from "../blocks/eco_voice/scripts/SpeechVoice/voiceAssistant.js";
 import { ProcessTextAudio } from "../blocks/eco_voice/scripts/ProcessTextAudio/process.js";
+import { MethodAJAX } from "../blocks/eco_voice/scripts/AJAX/methodAjax.js";
 
 //* Función que activa el botón para reconocer audio por voz
 const reconocimientoVoz = async() => {
@@ -55,10 +56,22 @@ const reconocimientoVoz = async() => {
                     //* Ejemplo: [ tercero - matemáticas - calificaciones ]
                     const splitCadena = cadenaProcesada.split(' - ');
                     postTextAudioGradesAJAX( `${ splitCadena[0] } - ${ splitCadena[1] }`, divOutput );
+                    //MethodAJAX.postTextAudio({
+                    //    methodName: 'block_eco_voice_post_textAudio_grades',
+                    //    dataPost: { textaudio: `${ splitCadena[0] } - ${ splitCadena[1] }` },
+                    //    divOutput,
+                    //    VoiceAssistant
+                    //});
 
                 } else {
 
                     postTextAudioAJAX( cadenaProcesada, divOutput );
+                    //MethodAJAX.postTextAudio({
+                    //    methodName: 'block_eco_voice_post_textAudio',
+                    //    dataPost: { textaudio: cadenaProcesada },
+                    //    divOutput,
+                    //    VoiceAssistant
+                    //});
 
                 }
 
@@ -137,8 +150,6 @@ const procesoValidarTextoAudio = ( cadena ) => {
 
 }
 
-//TODO: incluir la función postTextAudio en una clase 
-
 /* 
 * Función que usa AJAX para comunicarse con la API de moodle
 */
@@ -148,8 +159,8 @@ const postTextAudioAJAX = ( text, divOutput ) => {
 
         //* Creando promesa
         let promises = ajax.call([{
-            methodname: 'block_eco_voice_post_textAudio',
-            args: { textAudio: text },
+            methodname: 'block_eco_voice_post_textaudio',
+            args: { textaudio: text },
             done: notification.success,
             fail: notification.exception
         }]);
@@ -175,11 +186,13 @@ const postTextAudioAJAX = ( text, divOutput ) => {
                 divOutput.style.fontWeight = 'bold';
 
                 //* Ejecutando asistente de voz
-                await VoiceAssistant.start({textSayAssistant: 'Curso no encontrado'});
+                await VoiceAssistant.start({ textSayAssistant: 'Curso no encontrado' });
 
             }
 
         }).fail(( ex ) => {
+
+            console.log( ex );
             
             notification.addNotification({
                 message: 'Error en el proceso de redirección URL curso',
@@ -202,8 +215,8 @@ const postTextAudioGradesAJAX = ( text, divOutput ) => {
 
         //* Creando promesa
         let promises = ajax.call([{
-            methodname: 'block_eco_voice_post_textAudio_grades',
-            args: { textAudio: text },
+            methodname: 'block_eco_voice_post_textaudio_grades',
+            args: { textaudio: text },
             done: notification.success,
             fail: notification.exception
         }]);
