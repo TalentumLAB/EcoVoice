@@ -59,9 +59,22 @@ $modalcontent .= html_writer::tag( 'button', 'Activar Voz', ['onclick' => 'recon
 
 $modalcontent .= html_writer::start_tag( 'div', ['class' => 'container-instructions'] );
 $modalcontent .= html_writer::tag( 'h1', 'Instrucciones para asistente de voz' , [] );
-$modalcontent .= html_writer::tag( 'p', '1. Debes mencionar palabras como "muéstrame".' , [] );
-$modalcontent .= html_writer::tag( 'p', '2. Debes mencionar el "grado" y la "categoría".' , [] );
-$modalcontent .= html_writer::tag( 'p', '3. Por ejemplo: Muéstrame el curso de matemáticas de tercero.' , [] );
+$modalcontent .= html_writer::tag(
+    'p',
+    '1. Si quieres ir un curso, debes mencionar la palabra "curso" seguido del contenido.',
+    [],
+);
+$modalcontent .= html_writer::tag(
+    'p',
+    '2. Si quieres ver las calificaciones de un curso, menciona palabras "calificación" o "calificaciones".',
+    []
+);
+$modalcontent .= html_writer::tag( 'p', '3. Primer ejemplo: Muéstrame el curso de matemáticas de tercero.' , [] );
+$modalcontent .= html_writer::tag(
+    'p',
+    '4. Segundo ejemplo: Muéstrame las calificaciones del curso de matemáticas de transición.',
+    []
+);
 $modalcontent .= html_writer::end_tag( 'div' );
 
 $modalcontent .= html_writer::start_tag( 'div', ['class' => 'container-text-audio', 'id' => 'output'] );

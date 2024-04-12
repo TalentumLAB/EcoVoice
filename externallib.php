@@ -43,7 +43,7 @@ class block_eco_voice_external extends external_api {
         return new external_function_parameters(
             [
                 'textaudio' => new external_value(
-                    ARAM_RAW,
+                    PARAM_RAW,
                     VALUE_OPTIONAL,
                     'Parámetro que contiene el audio convertido en texto'
                 ),
@@ -105,7 +105,8 @@ class block_eco_voice_external extends external_api {
         return new external_function_parameters(
             [
                 'textaudio' => new external_value(
-                    PARAM_RAW, VALUE_OPTIONAL,
+                    PARAM_RAW,
+                    VALUE_OPTIONAL,
                     'Parámetro que contiene el audio convertido en texto'
                 ),
             ],
